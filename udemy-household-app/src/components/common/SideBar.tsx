@@ -3,7 +3,8 @@ import MailIcon from '@mui/icons-material/Mail';
 import HomeIcon from '@mui/icons-material/Home';
 import EqualizerIcon from "@mui/icons-material/Equalizer"
 import InboxIcon from '@mui/icons-material/MoveToInbox';
-import React from 'react'
+import React, {CSSProperties, FC} from 'react'
+import { NavLink } from 'react-router-dom';
 
 interface SidebarProps {
     drawerWidth: number,
@@ -26,21 +27,39 @@ const SideBar = ({drawerWidth,mobileOpen,handleDrawerToggle,handleDrawerClose,ha
         {text: "Report", path: "/report", icon: EqualizerIcon},
     ]
 
+    const baseLinkStyle:CSSProperties = {
+      textDecoration: "none",
+      color: "inherit",
+      display: "block",
+    }
+
+    const activeLinkStyle:CSSProperties = {
+      backgroundColor: "rgba(0,0,0, 0.08)"
+    }
+
     const drawer = (
         <div>
           <Toolbar />
           <Divider />
           <List>
             {MenuItems.map((item, index) => (
-              <ListItem key={index} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                    <item.icon />
-                  </ListItemIcon>
-                  <ListItemText primary={item.text} />
-                </ListItemButton>
-              </ListItem>
+              <NavLink key ={item.text} to={item.path} style={({isActive}) => {
+                console.log("選択されたメニューは", item.text, isActive)
+                return {
+                  ...baseLinkStyle,
+                  ...(isActive ? activeLinkStyle: {})
+                }
+              }}>
+                <ListItem key={index} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
+                      <item.icon />
+                    </ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItemButton>
+                </ListItem>
+              </NavLink>
             ))}
           </List>
         </div>
