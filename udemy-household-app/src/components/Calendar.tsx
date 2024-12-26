@@ -7,13 +7,15 @@ import "../calendar.css";
 import { Balance, CalendarContent, Transaction } from '../types';
 import { calculateDailyBalances } from '../utils/financeCalculations';
 import { formatCurrency } from '../utils/formatting';
+import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 
 interface CalenderProps {
   monthlyTransactions: Transaction[],
   setCurrentMonth:  React.Dispatch<React.SetStateAction<Date>>,
+  setCurrentDay: React.Dispatch<React.SetStateAction<string>>,
 }
 
-const Calendar = ({monthlyTransactions, setCurrentMonth}: CalenderProps) => {
+const Calendar = ({monthlyTransactions, setCurrentMonth, setCurrentDay}: CalenderProps) => {
 
   const dailyBalances = calculateDailyBalances(monthlyTransactions)
   console.log("dailyBalance",dailyBalances);
@@ -58,14 +60,19 @@ const Calendar = ({monthlyTransactions, setCurrentMonth}: CalenderProps) => {
     console.log("current month",datesetInfo.view.currentStart);
   }
 
+  const handleDateClick = (dateInfo: DateClickArg) => {
+    setCurrentDay(dateInfo.dateStr);
+  }
+
   return (
     <FullCalendar 
       locale={jaLocale}
-      plugins={[dayGridPlugin]}
+      plugins={[dayGridPlugin, interactionPlugin]}
       initialView='dayGridMonth'
       events={calendarEvents}
       eventContent={renderEventContent}
       datesSet={handleDateSet}
+      dateClick={handleDateClick}
     />
   )
 }
